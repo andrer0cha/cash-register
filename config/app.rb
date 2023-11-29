@@ -2,6 +2,7 @@
 
 require 'bundler'
 require 'bundler/setup'
+require 'sinatra/base'
 require 'sinatra-initializers'
 require 'sinatra/activerecord'
 
