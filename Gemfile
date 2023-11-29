@@ -27,4 +27,5 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.10'
   gem 'rubocop', '~> 1.57', require: false
   gem 'rubocop-rspec', '~> 2.25', require: false
+  gem 'shoulda-matchers', '~> 5.0'
 end
