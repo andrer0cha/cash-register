@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../config/app'
+require 'irb'
+
+IRB.start('config/app.rb')
