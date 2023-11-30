@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Product do
+RSpec.describe Product, type: :model do
   describe 'validations' do
     subject do
       create(:product)

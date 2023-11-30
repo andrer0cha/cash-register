@@ -6,20 +6,17 @@ require 'sinatra/base'
 require 'sinatra-initializers'
 require 'sinatra/activerecord'
 
-
-
 APP_ENV = ENV['RACK_ENV'] || 'development'
 Bundler.require :default, APP_ENV.to_sym
 
-#require_relative "environments/#{APP_ENV}"
+# require_relative "environments/#{APP_ENV}"
 require_all 'app/**/*.rb'
-require_all 'spec/**/*.rb'
 
 register Sinatra::Initializers
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  set :database, { adapter: "sqlite3", database: 'cash_register.sqlite3'}
+  set :database, { adapter: 'sqlite3', database: 'cash_register.sqlite3' }
 
   use ApplicationController
 end

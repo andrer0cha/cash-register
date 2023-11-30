@@ -46,3 +46,6 @@ RSpec/MultipleExpectations:
 RSpec/EmptyExampleGroup:
   Exclude:
     - "spec/requests/**/*"
+
+RSpec/Rails/InferredSpecType:
+  Enabled: false
