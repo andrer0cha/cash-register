@@ -24,8 +24,10 @@ group :test do
 end
 
 group :development, :test do
+  gem 'factory_bot', '~> 6.4'
+  gem 'faker', '~> 3.2'
   gem 'pry-byebug', '~> 3.10'
-  gem 'rubocop', '~> 1.57', require: false
   gem 'rubocop-rspec', '~> 2.25', require: false
+  gem 'rubocop', '~> 1.57', require: false
   gem 'shoulda-matchers', '~> 5.0'
 end

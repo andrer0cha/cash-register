@@ -6,6 +6,7 @@ require_relative '../config/app'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true  

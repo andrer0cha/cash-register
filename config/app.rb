@@ -13,6 +13,7 @@ Bundler.require :default, APP_ENV.to_sym
 
 #require_relative "environments/#{APP_ENV}"
 require_all 'app/**/*.rb'
+require_all 'spec/**/*.rb'
 
 register Sinatra::Initializers
 
