@@ -16,7 +16,6 @@ register Sinatra::Initializers
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  set :database, { adapter: 'sqlite3', database: 'cash_register.sqlite3' }
 
   use ApplicationController
 end
