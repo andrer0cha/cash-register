@@ -13,9 +13,9 @@ Bundler.require :default, APP_ENV.to_sym
 require_all 'app/**/*.rb'
 
 register Sinatra::Initializers
+register Sinatra::ActiveRecordExtension
 
 class App < Sinatra::Base
-  register Sinatra::ActiveRecordExtension
-
   use ApplicationController
+  use ProductsController
 end

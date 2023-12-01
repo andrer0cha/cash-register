@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < Sinatra::Base
-  set :default_content_type, :json
-
-  get '/' do
-    "Hello World"
+  configure do
+    enable :logging
+    use Rack::CommonLogger
   end
 end
