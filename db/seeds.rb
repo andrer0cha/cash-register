@@ -8,12 +8,8 @@
   Product.create!(product_arguments)
 end
 
-User.create!(
+UserCreator.new(
   first_name: 'Current',
   last_name: 'User',
   email: 'current.user@example.com'
-)
-
-Cart.create!(
-  user_id: User.find_by(email: 'current.user@example.com').id
-)
+).call # already creates necessary associations
