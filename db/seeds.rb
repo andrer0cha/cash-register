@@ -15,5 +15,5 @@ User.create!(
 )
 
 Cart.create!(
-  user_id: User.find_by(email: 'current.user@example.com')
+  user_id: User.find_by(email: 'current.user@example.com').id
 )
