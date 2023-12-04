@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Product, type: :model do
+  describe 'associations' do
+    it { is_expected.to have_many(:carts_products) }
+    it { is_expected.to have_many(:carts).through(:carts_products) }
+  end
+
   describe 'validations' do
     subject do
       create(:product)
