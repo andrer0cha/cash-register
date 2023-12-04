@@ -3,7 +3,7 @@
 ENV['RACK_ENV'] ||= 'test'
 ENV['RAILS_ENV'] = 'test'
 
-require_relative '../config/app'
+require_relative '../config/environment'
 require_all 'spec/factories/*.rb'
 
 RSpec.configure do |config|
