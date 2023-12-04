@@ -2,6 +2,8 @@
 
 FactoryBot.define do
   factory :cart do
-    user
+    trait :with_products do
+      create_list { :product }
+    end
   end
 end
