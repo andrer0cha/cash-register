@@ -19,6 +19,13 @@ class CartController < ApplicationController
     ).call
   end
 
+  delete '/remove_product' do
+    ::DeleteFromCart.new(
+      current_user:,
+      product_id: @request_body['product_id']
+    ).call
+  end
+
   private
 
   def current_user_cart_products

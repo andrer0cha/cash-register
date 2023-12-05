@@ -104,7 +104,7 @@ RSpec.describe CartController, type: :request do
         )
       end
 
-      it 'doees not call the AddToCart service' do
+      it 'does not call the AddToCart service' do
         aggregate_failures do
           expect { add_to_cart }.to raise_error(
             ApplicationController::MissingCurrentUser,
@@ -112,6 +112,70 @@ RSpec.describe CartController, type: :request do
           )
           expect(AddToCart).not_to have_received(:new)
           expect(add_to_cart_instance).not_to have_received(:call)
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /remove_product' do
+    subject(:delete_from_cart) do
+      delete '/remove_product', payload, { 'Content-Type' => 'application/json' }
+    end
+
+    let(:payload) do
+      {
+        product_id: existing_product.id
+      }.to_json
+    end
+    let!(:existing_product) do
+      create(:product)
+    end
+    let(:delete_from_cart_instance) do
+      service = instance_double(DeleteFromCart)
+
+      allow(service).to receive(:call).and_return(true)
+
+      service
+    end
+
+    before do
+      allow(DeleteFromCart).to receive(:new).and_return(delete_from_cart_instance)
+    end
+
+    context 'when there is a current_user' do
+      it 'calls the DeleteFromCart service' do
+        delete_from_cart
+
+        aggregate_failures do
+          expect(DeleteFromCart).to have_received(:new).with(
+            current_user:,
+            product_id: JSON.parse(payload)['product_id']
+          )
+          expect(delete_from_cart_instance).to have_received(:call)
+        end
+      end
+    end
+
+    context 'when there is not a current_user' do
+      before do
+        User.destroy_all
+      end
+
+      it 'raises ApplicationController::MissingCurrentUser error' do
+        expect { delete_from_cart }.to raise_error(
+          ApplicationController::MissingCurrentUser,
+          'Current User not found.'
+        )
+      end
+
+      it 'does not call the DeleteFromCart service' do
+        aggregate_failures do
+          expect { delete_from_cart }.to raise_error(
+            ApplicationController::MissingCurrentUser,
+            'Current User not found.'
+          )
+          expect(DeleteFromCart).not_to have_received(:new)
+          expect(delete_from_cart_instance).not_to have_received(:call)
         end
       end
     end
