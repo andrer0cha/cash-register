@@ -1,24 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe CartController, type: :request do
-  describe '/' do # GET /cart/
+  let!(:current_user) do
+    create(:user,
+           first_name: 'Current',
+           last_name: 'User',
+           email: 'current.user@example.com')
+  end
+
+  describe 'GET /cart/' do # GET /cart/
     subject(:get_cart) do
       get '/', {}.to_json, { 'Content-Type' => 'application/json' }
     end
 
-    let!(:current_user) do
-      create(:user,
-             first_name: 'Current',
-             last_name: 'User',
-             email: 'current.user@example.com')
-    end
-
     let!(:product_list) do
       create_list(:product, 3)
-    end
-
-    before do
-      allow(described_class).to receive(:current_user).and_return(current_user)
     end
 
     context 'when the current_user has products in the cart' do
@@ -46,10 +42,13 @@ RSpec.describe CartController, type: :request do
         nil
       end
 
-      it 'returns an empty array' do
-        response = get_cart
-
-        expect(JSON.parse(response.body)).to eq([])
+      it 'raises ApplicationController::MissingCurrentUser error' do
+        aggregate_failures do
+          expect { get_cart }.to raise_error(
+            ApplicationController::MissingCurrentUser,
+            'Current User not found.'
+          )
+        end
       end
     end
   end

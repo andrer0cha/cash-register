@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ProductsController, type: :request do
-  describe '/products' do
+  describe 'GET /products' do
     subject(:get_products_list) do
       get '/products', {}.to_json, { 'Content-Type' => 'application/json' }
     end

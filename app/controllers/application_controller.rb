@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
 class ApplicationController < Sinatra::Base
+  class Error < StandardError; end
+  class MissingCurrentUser < Error; end
+
   set :default_content_type, :json
+
+  before do
+    request.body.rewind
+    unparsed_body = request.body.read
+
+    @request_body = JSON.parse(unparsed_body) unless unparsed_body.empty?
+  end
 
   after do
     response.body = response.body.to_json unless response.body.is_a? String
@@ -22,5 +32,9 @@ class ApplicationController < Sinatra::Base
     response.status = status
 
     response
+  end
+
+  def handle_current_user!
+    raise(MissingCurrentUser, 'Current User not found.') unless current_user.present?
   end
 end
