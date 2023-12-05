@@ -14,6 +14,7 @@ class CartController < ApplicationController
 
   patch '/add_product' do
     ::AddToCart.new(
+      current_user:,
       product_id: @request_body['product_id']
     ).call
   end
