@@ -43,16 +43,27 @@ RSpec.describe AddToCart do
 
   context 'when the product is already in the cart' do
     before do
-      current_user.cart.products << existing_product
+      create(:carts_product, cart_id: current_user.cart.id, product_id: existing_product.id,
+                             unit_price: existing_product.price, units: 1)
     end
 
-    it 'adds to the cart anyways' do
+    it 'does not add a new CartProduct record' do
       add_to_cart_call
 
       expect(
-        current_user.cart.products.count do |cart_product|
-          cart_product.id == existing_product.id
-        end
+        current_user.cart.carts_products.where(
+          product_id: existing_product.id
+        ).count
+      ).to eq(1)
+    end
+
+    it 'updates the units column' do
+      add_to_cart_call
+
+      expect(
+        current_user.cart.carts_products.where(
+          product_id: existing_product.id
+        ).first.units
       ).to eq(2)
     end
   end
