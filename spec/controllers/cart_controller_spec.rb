@@ -180,4 +180,42 @@ RSpec.describe CartController, type: :request do
       end
     end
   end
+
+  describe 'DELETE /clean_cart' do
+    subject(:clean_cart_call) do
+      delete '/clean_cart', {}.to_json, { 'Content-Type' => 'application/json' }
+    end
+
+    let!(:products_in_cart) do
+      create_list(:product, 3)
+    end
+
+    before do
+      current_user.cart.products << products_in_cart
+    end
+
+    it 'removes all products from cart' do
+      clean_cart_call
+
+      expect(current_user.cart.products.count).to eq(0)
+    end
+
+    it 'returns an empty array' do
+      response = clean_cart_call
+
+      expect(JSON.parse(response.body)).to eq([])
+    end
+
+    context 'when the cart does not have a product' do
+      before do
+        current_user.cart.products.destroy_all
+      end
+
+      it 'returns an empty array anyways' do
+        response = clean_cart_call
+
+        expect(JSON.parse(response.body)).to eq([])
+      end
+    end
+  end
 end

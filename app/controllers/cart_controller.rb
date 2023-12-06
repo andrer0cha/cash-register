@@ -26,6 +26,12 @@ class CartController < ApplicationController
     ).call
   end
 
+  delete '/clean_cart' do
+    current_user.cart.carts_products.destroy_all
+
+    current_user_cart_products
+  end
+
   private
 
   def current_user_cart_products
