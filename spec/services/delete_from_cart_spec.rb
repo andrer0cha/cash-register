@@ -21,7 +21,9 @@ RSpec.describe DeleteFromCart do
   end
 
   before do
-    current_user.cart.products = products_on_cart
+    products_on_cart.each do |product|
+      create(:carts_product, cart: current_user.cart, product:)
+    end
   end
 
   it 'deletes the product from cart' do
@@ -32,7 +34,6 @@ RSpec.describe DeleteFromCart do
 
   it 'returns the current user cart updated' do
     response = delete_from_cart_call
-
     expect(response).to eq(
       products_on_cart.excluding(product_to_delete)
     )
@@ -66,13 +67,25 @@ RSpec.describe DeleteFromCart do
 
   context 'when there is more than one item for the given product in cart' do
     before do
-      current_user.cart.products << product_to_delete
+      current_user.cart.carts_products.where(
+        product_id: product_to_delete.id
+      ).first.update(units: 2)
     end
 
     it 'deletes only one' do
       delete_from_cart_call
 
       expect(current_user.cart.products).to include(product_to_delete)
+    end
+
+    it 'updates the units column' do
+      delete_from_cart_call
+
+      expect(
+        current_user.cart.carts_products.where(
+          product_id: product_to_delete.id
+        ).first.units
+      ).to eq(1)
     end
   end
 end

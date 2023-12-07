@@ -35,8 +35,18 @@ class DeleteFromCart
   end
 
   def remove_given_product_from_cart!
-    current_user.cart.carts_products.find_by(
+    if cart_product_record.units >= 2
+      cart_product_record.units -= 1
+      cart_product_record.save!
+    else
+      cart_product_record.destroy
+    end
+  end
+
+  def cart_product_record
+    @cart_product_record ||= CartsProduct.find_or_initialize_by(
+      cart_id: current_user.cart.id,
       product_id:
-    ).destroy
+    )
   end
 end
