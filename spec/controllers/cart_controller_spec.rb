@@ -19,7 +19,9 @@ RSpec.describe CartController, type: :request do
 
     context 'when the current_user has products in the cart' do
       before do
-        current_user.cart.products << product_list
+        product_list.each do |product|
+          create(:carts_product, cart: current_user.cart, product:)
+        end
       end
 
       it 'returns all the products in the cart' do
@@ -191,7 +193,9 @@ RSpec.describe CartController, type: :request do
     end
 
     before do
-      current_user.cart.products << products_in_cart
+      products_in_cart.each do |product|
+        create(:carts_product, cart: current_user.cart, product:)
+      end
     end
 
     it 'removes all products from cart' do
