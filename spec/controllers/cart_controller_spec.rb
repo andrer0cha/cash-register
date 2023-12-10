@@ -62,7 +62,8 @@ RSpec.describe CartController, type: :request do
 
     let(:payload) do
       {
-        product_id: existing_product.id
+        product_id: existing_product.id,
+        qty_to_add: 5
       }.to_json
     end
     let!(:existing_product) do
@@ -87,7 +88,8 @@ RSpec.describe CartController, type: :request do
         aggregate_failures do
           expect(AddToCart).to have_received(:new).with(
             current_user:,
-            product_id: JSON.parse(payload)['product_id']
+            product: Product.find(JSON.parse(payload)['product_id']),
+            qty_to_add: JSON.parse(payload)['qty_to_add']
           )
           expect(add_to_cart_instance).to have_received(:call)
         end

@@ -4,7 +4,8 @@ RSpec.describe AddToCart do
   subject(:add_to_cart_call) do
     described_class.new(
       current_user:,
-      product_id: existing_product.id
+      product: existing_product,
+      qty_to_add:
     ).call
   end
 
@@ -14,6 +15,15 @@ RSpec.describe AddToCart do
 
   let(:current_user) do
     create(:user)
+  end
+  let(:qty_to_add) do
+    3
+  end
+
+  let(:expected_updated_cart) do
+    qty_to_add.times.map do
+      existing_product
+    end
   end
 
   it 'adds the product to cart' do
@@ -25,20 +35,18 @@ RSpec.describe AddToCart do
   it 'returns the current user cart updated' do
     response = add_to_cart_call
 
-    expect(response).to eq([existing_product])
+    expect(response).to match(expected_updated_cart)
   end
 
-  context 'when the product_id given is not valid' do
-    before do
-      Product.destroy_all
-    end
+  it 'adds the exact qty_to_add to cart' do
+    add_to_cart_call
 
-    it 'raises ProductNotFound error' do
-      expect { add_to_cart_call }.to raise_error(
-        described_class::ProductNotFound,
-        'Product not found for given id.'
-      )
-    end
+    expect(current_user.cart.carts_products.pluck(:cart_id, :product_id,
+                                                  :unit_price)).to include(
+                                                    [current_user.cart.id,
+                                                     existing_product.id,
+                                                     existing_product.price]
+                                                  ).exactly(qty_to_add)
   end
 
   context 'when the product is already in the cart' do
@@ -47,24 +55,14 @@ RSpec.describe AddToCart do
                              unit_price: existing_product.price, units: 1)
     end
 
-    it 'does not add a new CartProduct record' do
+    it 'adds a new CartProduct record' do
       add_to_cart_call
 
       expect(
         current_user.cart.carts_products.where(
           product_id: existing_product.id
         ).count
-      ).to eq(1)
-    end
-
-    it 'updates the units column' do
-      add_to_cart_call
-
-      expect(
-        current_user.cart.carts_products.where(
-          product_id: existing_product.id
-        ).first.units
-      ).to eq(2)
+      ).to eq(qty_to_add + 1)
     end
   end
 end

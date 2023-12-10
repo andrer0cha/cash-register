@@ -15,7 +15,8 @@ class CartController < ApplicationController
   patch '/add_product' do
     ::AddToCart.new(
       current_user:,
-      product_id: @request_body['product_id']
+      product: Product.find(@request_body['product_id']),
+      qty_to_add: @request_body['qty_to_add']
     ).call
   end
 
