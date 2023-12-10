@@ -4,16 +4,21 @@ RSpec.describe DeleteFromCart do
   subject(:delete_from_cart_call) do
     described_class.new(
       current_user:,
-      product_id: product_to_delete.id
+      product: product_to_delete,
+      qty_to_delete:
     ).call
   end
 
-  let(:products_on_cart) do
+  let(:products_in_cart) do
     create_list(:product, 5)
   end
 
   let!(:product_to_delete) do
-    products_on_cart.first
+    products_in_cart.first
+  end
+
+  let(:qty_to_delete) do
+    1
   end
 
   let(:current_user) do
@@ -21,7 +26,7 @@ RSpec.describe DeleteFromCart do
   end
 
   before do
-    products_on_cart.each do |product|
+    products_in_cart.each do |product|
       create(:carts_product, cart: current_user.cart, product:)
     end
   end
@@ -32,24 +37,12 @@ RSpec.describe DeleteFromCart do
     expect(current_user.cart.products).not_to include(product_to_delete)
   end
 
-  it 'returns the current user cart updated' do
+  it 'returns the cart updated' do
     response = delete_from_cart_call
+
     expect(response).to eq(
-      products_on_cart.excluding(product_to_delete)
+      products_in_cart.excluding(product_to_delete)
     )
-  end
-
-  context 'when the product_id given is not valid' do
-    before do
-      Product.destroy_all
-    end
-
-    it 'raises ProductNotFound error' do
-      expect { delete_from_cart_call }.to raise_error(
-        described_class::ProductNotFound,
-        'Product not found for given id.'
-      )
-    end
   end
 
   context 'when the product is not in cart' do
@@ -67,25 +60,27 @@ RSpec.describe DeleteFromCart do
 
   context 'when there is more than one item for the given product in cart' do
     before do
-      current_user.cart.carts_products.where(
-        product_id: product_to_delete.id
-      ).first.update(units: 2)
+      qty_to_delete.times do
+        current_user.cart.products << products_in_cart.first
+      end
     end
 
-    it 'deletes only one' do
+    it 'deletes only the given qty_to_delete' do
       delete_from_cart_call
 
-      expect(current_user.cart.products).to include(product_to_delete)
+      expect(current_user.cart.products).to include(product_to_delete).exactly(1)
+    end
+  end
+
+  context 'when qty_to_delete is greater than the amount of products in cart' do
+    let(:qty_to_delete) do
+      2
     end
 
-    it 'updates the units column' do
+    it 'deletes only the available amount' do
       delete_from_cart_call
 
-      expect(
-        current_user.cart.carts_products.where(
-          product_id: product_to_delete.id
-        ).first.units
-      ).to eq(1)
+      expect(current_user.cart.products).not_to include(product_to_delete)
     end
   end
 end

@@ -23,7 +23,8 @@ class CartController < ApplicationController
   delete '/remove_product' do
     ::DeleteFromCart.new(
       current_user:,
-      product_id: @request_body['product_id']
+      product: Product.find(@request_body['product_id']),
+      qty_to_delete: @request_body['qty_to_delete']
     ).call
   end
 

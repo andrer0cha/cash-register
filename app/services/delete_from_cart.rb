@@ -8,7 +8,8 @@ class DeleteFromCart
   extend Dry::Initializer
 
   option :current_user
-  option :product_id
+  option :product
+  option :qty_to_delete
 
   def call
     raise(ProductNotInCart, 'Product not found in cart.') unless product_in_cart?
@@ -23,30 +24,16 @@ class DeleteFromCart
   private
 
   def product_in_cart?
-    current_user_cart_products.include?(given_product)
+    current_user_cart_products.include?(product)
   end
 
   def current_user_cart_products
     current_user.cart.products
   end
 
-  def given_product
-    @given_product ||= Product.find(product_id)
-  end
-
   def remove_given_product_from_cart!
-    if cart_product_record.units >= 2
-      cart_product_record.units -= 1
-      cart_product_record.save!
-    else
-      cart_product_record.destroy
+    qty_to_delete.times do
+      current_user.cart.carts_products.find_by(product_id: product.id)&.destroy
     end
-  end
-
-  def cart_product_record
-    @cart_product_record ||= CartsProduct.find_or_initialize_by(
-      cart_id: current_user.cart.id,
-      product_id:
-    )
   end
 end
