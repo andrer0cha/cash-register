@@ -8,7 +8,8 @@ class RuleType < ActiveRecord::Base
     add_item: 'add_item',
     discount_cart: 'discount_cart',
     free_shipping: 'free_shipping',
-    set_price: 'set_price',
+    set_price_prod_type: 'set_price_prod_type',
+    set_price_single_unity: 'set_price_single_unity',
     discount_prod_type: 'discount_prod_type',
     discount_single_unity: 'discount_single_unity'
   }
