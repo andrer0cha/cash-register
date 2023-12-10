@@ -18,14 +18,20 @@ RSpec.describe Rule, type: :model do
     it { is_expected.to validate_presence_of(:target_amount) }
     it { is_expected.to validate_presence_of(:target_amount_type) }
 
-    it {
-      expect(create_rule).to
-      validate_inclusion_of(:trigger_amount_type).in_array(described_class::VALID_AMOUNT_TYPES)
-    }
+    it 'validates the inclusionn of trigger_amount_type in VALID_AMOUNT_TYPES' do
+      expect(
+        create_rule
+      ).to validate_inclusion_of(
+        :trigger_amount_type
+      ).in_array(described_class::VALID_AMOUNT_TYPES)
+    end
 
-    it {
-      expect(create_rule).to
-      validate_inclusion_of(:target_amount_type).in_array(described_class::VALID_AMOUNT_TYPES)
-    }
+    it 'validates the inclusionn of target_amount_type in VALID_AMOUNT_TYPES' do
+      expect(
+        create_rule
+      ).to validate_inclusion_of(
+        :target_amount_type
+      ).in_array(described_class::VALID_AMOUNT_TYPES)
+    end
   end
 end
