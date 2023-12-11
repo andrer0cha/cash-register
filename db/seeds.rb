@@ -15,10 +15,10 @@ UserCreator.new(
 ).call # already creates necessary associations (Cart)
 
 [
-  { internal_reference: 'add_item', description: 'Add target item to cart.' },
+  { internal_reference: 'bxgy', description: 'Buy X get Y items of same type.' },
   { internal_reference: 'discount_cart', description: 'Give discount to entire cart.' },
   { internal_reference: 'free_shipping', description: 'Give free shipping.' },
-  { internal_reference: 'set_price', description: 'Set fixed price to product.' },
+  { internal_reference: 'set_price_prod_type', description: 'Set fixed price to product.' },
   { internal_reference: 'discount_prod_type',
     description: 'Give discount to all products of same type.' },
   { internal_reference: 'discount_single_unity',
@@ -33,7 +33,7 @@ end
     trigger_amount: 1,
     trigger_amount_type: 'unit',
     trigger_amount_operator: 'gte',
-    rule_type: RuleType.find_by(internal_reference: 'add_item'),
+    rule_type: RuleType.find_by(internal_reference: 'bxgy'),
     target_product_id: Product.first.id,
     target_amount: 1,
     target_amount_type: 'unit'
@@ -43,7 +43,7 @@ end
     trigger_amount: 3,
     trigger_amount_type: 'unit',
     trigger_amount_operator: 'gte',
-    rule_type: RuleType.find_by(internal_reference: 'set_price'),
+    rule_type: RuleType.find_by(internal_reference: 'set_price_prod_type'),
     target_product_id: Product.second.id,
     target_amount: 450,
     target_amount_type: 'cents'

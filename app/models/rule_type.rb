@@ -5,6 +5,7 @@ class RuleType < ActiveRecord::Base
   validates :internal_reference, uniqueness: true
 
   enum internal_reference: {
+    bxgy: 'bxgy',
     add_item: 'add_item',
     discount_cart: 'discount_cart',
     free_shipping: 'free_shipping',
