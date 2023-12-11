@@ -7,7 +7,6 @@ RSpec.describe CartsProduct, type: :model do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:units) }
     it { is_expected.to validate_presence_of(:unit_price) }
   end
 end

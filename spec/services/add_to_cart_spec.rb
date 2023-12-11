@@ -101,7 +101,7 @@ RSpec.describe AddToCart do
   context 'when the product is already in the cart' do
     before do
       create(:carts_product, cart_id: current_user.cart.id, product_id: existing_product.id,
-                             unit_price: existing_product.price, units: 1)
+                             unit_price: existing_product.price)
     end
 
     it 'adds a new CartProduct record' do
