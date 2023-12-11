@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 [
-  { code: 'GR1', name: 'Green Tea', price: 3.11 },
-  { code: 'SR1', name: 'Strawberry', price: 5.00 },
-  { code: 'CF1', name: 'Coffee', price: 11.23 }
+  { code: 'GR1', name: 'Green Tea', price: 311.0 },
+  { code: 'SR1', name: 'Strawberry', price: 500.0 },
+  { code: 'CF1', name: 'Coffee', price: 1123.0 }
 ].each do |product_arguments|
   Product.create!(product_arguments)
 end
@@ -55,7 +55,7 @@ end
     trigger_amount_operator: 'gte',
     rule_type: RuleType.find_by(internal_reference: 'discount_prod_type'),
     target_product_id: Product.third.id,
-    target_amount: 33,
+    target_amount: 33.3333333,
     target_amount_type: 'percentage'
   }
 ].each do |rule_argument|
