@@ -17,6 +17,21 @@ RSpec.describe CartController, type: :request do
       create_list(:product, 3)
     end
 
+    let(:expected_items_response) do
+      {
+        product_list.first.name => { qty: 1, value: product_list.first.price.to_f / 100.0 },
+        product_list.second.name => { qty: 1, value: product_list.second.price.to_f / 100.0 },
+        product_list.third.name => { qty: 1, value: product_list.third.price.to_f / 100.0 }
+      }
+    end
+
+    let(:expected_response) do
+      [
+        items: expected_items_response,
+        total: current_user.cart.carts_products&.sum(&:unit_price).to_f / 100.0
+      ]
+    end
+
     context 'when the current_user has products in the cart' do
       before do
         product_list.each do |product|
@@ -27,7 +42,7 @@ RSpec.describe CartController, type: :request do
       it 'returns all the products in the cart' do
         response = get_cart
 
-        expect(JSON.parse(response.body)).to eq(product_list.as_json)
+        expect(JSON.parse(response.body)).to eq(expected_response.as_json)
       end
     end
 
@@ -35,7 +50,11 @@ RSpec.describe CartController, type: :request do
       it 'returns an empty array' do
         response = get_cart
 
-        expect(JSON.parse(response.body)).to eq([])
+        expect(JSON.parse(response.body)).to eq(
+          [
+            { 'items' => [], 'total' => 0.0 }
+          ]
+        )
       end
     end
 
@@ -211,7 +230,11 @@ RSpec.describe CartController, type: :request do
     it 'returns an empty array' do
       response = clean_cart_call
 
-      expect(JSON.parse(response.body)).to eq([])
+      expect(JSON.parse(response.body)).to eq(
+        [
+          { 'items' => [], 'total' => 0.0 }
+        ]
+      )
     end
 
     context 'when the cart does not have a product' do
@@ -222,7 +245,11 @@ RSpec.describe CartController, type: :request do
       it 'returns an empty array anyways' do
         response = clean_cart_call
 
-        expect(JSON.parse(response.body)).to eq([])
+        expect(JSON.parse(response.body)).to eq(
+          [
+            { 'items' => [], 'total' => 0.0 }
+          ]
+        )
       end
     end
   end
