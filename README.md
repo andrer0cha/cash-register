@@ -22,6 +22,10 @@ To run the app, after installing the requirements, one can simply:
 4. Run `bundle exec rake db:create && bundle exec rake db:migrate` to setup databases
 5. Start the server/application by running `bundle exec rackup config.ru`
 
+### Database Diagram
+<img width="795" alt="Screenshot 2023-12-11 at 02 36 21" src="https://github.com/andrer0cha/cash-register/assets/87980712/d08f4450-6f3c-4ac4-95ab-f4940ccb868e">
+
+
 ## Possible Next steps
 1. Revert the rules when removing product from cart
 2. Fix endpoint responses to follow API patterns properly
