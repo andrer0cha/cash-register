@@ -26,6 +26,17 @@ RSpec.describe AddToCart do
     end
   end
 
+  let(:apply_to_cart_instance) do
+    service = instance_double(ApplyRuleToCart)
+
+    allow(service).to receive(:call)
+    service
+  end
+
+  before do
+    allow(ApplyRuleToCart).to receive(:new).and_return(apply_to_cart_instance)
+  end
+
   it 'adds the product to cart' do
     add_to_cart_call
 
@@ -47,6 +58,44 @@ RSpec.describe AddToCart do
                                                      existing_product.id,
                                                      existing_product.price]
                                                   ).exactly(qty_to_add)
+  end
+
+  context 'when there are Rules related to the entire cart (empty product_id)' do
+    let!(:rule) do
+      create(:rule, trigger_product: nil)
+    end
+
+    it 'calls ApplyRuleToCart service' do
+      add_to_cart_call
+
+      expect(ApplyRuleToCart).to have_received(:new).with(
+        rule:,
+        cart: current_user.cart
+      )
+    end
+  end
+
+  context 'when there are rules with the product being added set as trigger_product' do
+    let!(:rule) do
+      create(:rule, trigger_product: existing_product)
+    end
+
+    it 'calls ApplyRuleToCart service' do
+      add_to_cart_call
+
+      expect(ApplyRuleToCart).to have_received(:new).with(
+        rule:,
+        cart: current_user.cart
+      )
+    end
+  end
+
+  context 'when there are no rules related to product neither to the entire cart' do
+    it 'does not call ApplyRuleToCart service' do
+      add_to_cart_call
+
+      expect(ApplyRuleToCart).not_to have_received(:new)
+    end
   end
 
   context 'when the product is already in the cart' do

@@ -12,6 +12,7 @@ class AddToCart
 
   def call
     add_to_cart!
+    apply_rules_to_cart!
 
     current_user.cart.products
   end
@@ -26,5 +27,27 @@ class AddToCart
         unit_price: product.price
       )
     end
+  end
+
+  def apply_rules_to_cart!
+    return unless rules_to_apply.any?
+
+    rules_to_apply.each do |rule|
+      ApplyRuleToCart.new(
+        rule:,
+        cart: current_user.cart
+      ).call
+    end
+  end
+
+  def rules_to_apply
+    @rules_to_apply ||= Rule.where(
+      '(trigger_product_id = ? OR trigger_product_id IS NULL)',
+      product.id
+    )
+  end
+
+  def operator(rule_to_apply)
+    Rule.trigger_amount_operators[rule_to_apply.trigger_amount_operator]
   end
 end
